@@ -52,8 +52,6 @@ function pauseApp(){
   pause.innerText = state.paused ? "resume" : "pause"
 }
 
-// const addComment = (e) => {do stuff}
-
 function addComment(e){
   e.preventDefault()
   let input = form.comment.value
