@@ -1,8 +1,3 @@
-const state = {
-  count: 0,
-  paused: false,
-  likes: {}
-}
 const counter = document.getElementById("counter")
 const plus = document.getElementById("plus")
 const minus = document.getElementById("minus")
@@ -13,63 +8,45 @@ const list = document.getElementById("list")
 const heart = document.getElementById("heart")
 
 
+const countUp = () => counter.innerText ++
+const countDown = () => counter.innerText --
 
-function count(num){
-  if (!state.paused){
-    state.count += num
-    counter.innerText = state.count
-  }
+function pauseCount(){
+  counter.classList.remove("paused")
+  interval = setInterval(countUp, 1000)
+  pause.innerText = "pause"
 }
 
-function like(){
-  (state.likes[state.count]) ? state.likes[state.count] ++ : state.likes[state.count] = 1
-  renderLikes()
+function unpauseCount(){
+  counter.classList.add("paused")
+  clearInterval(interval)
+  pause.innerText = "resume"
 }
 
-function renderLikes(){
-  likeList.innerHTML = ""
-  Object.entries(state.likes).forEach(likeArray => {
-    const second = likeArray[0]
-    const likes = likeArray[1]
-    renderLike(second, likes)
-  })
-}
-
-function renderLike(second, likes){
-  const li = document.createElement("li")
-  li.innerText = `${second} has been liked ${likes} time${state.likes[second] === 1 ? "" : "s"}.`
-  likeList.appendChild(li)
-}
-
-
-function pauseApp(){
-  state.paused = !state.paused
-  Array.from(document.querySelectorAll("button")).forEach(button=>{
-    if (button.id !== "pause") {
+function toggleButtons(){
+  document.querySelectorAll("button").forEach(button => {
+    if (button.id !== "pause"){
       button.disabled = !button.disabled
     }
   })
-  pause.innerText = state.paused ? "resume" : "pause"
 }
 
-function addComment(e){
-  e.preventDefault()
-  let input = form.comment.value
-  const comment = document.createElement("p")
-  comment.innerText = input
-  list.appendChild(comment)
-  form.reset()
+function like(){
+  let currentSecond = counter.innerText
+  let li = document.getElementById(`second-${currentSecond}`)
+  if (li){
+    li.innerText = `${currentSecond} has been liked ${++li.dataset.likes} times.`
+  }
+  else {
+    likeList.innerHTML += `<li id=second-${currentSecond} data-likes=1>${currentSecond} has been liked 1 time.</li>`
+  }
 }
 
-const buttonFunctions = {
-  "plus": () => count(1),
-  "minus": () => count(-1),
-  "pause": pauseApp,
-  "heart": like
-}
-
-setInterval(() => count(1), 1000)
-form.addEventListener("submit", addComment)
-document.addEventListener("click", (e) => {
-  buttonFunctions[e.target.id] && buttonFunctions[e.target.id]()
+heart.addEventListener("click", like)
+plus.addEventListener("click", countUp)
+minus.addEventListener("click", countDown)
+pause.addEventListener("click", () => {
+  counter.classList.contains("paused") ? pauseCount() : unpauseCount()
+  toggleButtons()
 })
+let interval = setInterval(countUp, 1000)
