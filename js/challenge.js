@@ -42,6 +42,17 @@ function like(){
   }
 }
 
+function addComment(e){
+  e.preventDefault()
+  let input = form.comment.value
+  if (input.length > 0){
+    const comment = document.createElement("p")
+    comment.innerText = input
+    list.appendChild(comment)
+    form.reset()
+  }
+}
+
 heart.addEventListener("click", like)
 plus.addEventListener("click", countUp)
 minus.addEventListener("click", countDown)
@@ -49,4 +60,5 @@ pause.addEventListener("click", () => {
   counter.classList.contains("paused") ? pauseCount() : unpauseCount()
   toggleButtons()
 })
+form.addEventListener("submit", addComment)
 let interval = setInterval(countUp, 1000)
